@@ -30,11 +30,11 @@ public class PahoDemo {
 
   public void publish1() {
     try {
-      client = new MqttClient("tcp://localhost:1883", "pahomqttpublish1");
+      client = new MqttClient("tcp://35.226.172.196:1884", "pahomqttpublish1");
       client.connect();
       MqttMessage message = new MqttMessage();
       message.setPayload("checkkkkk".getBytes());
-      client.publish("FireSensor", message);
+      client.publish("/home/outsidetemperature", message);
 	  System.out.println("publisheeddd");
       client.disconnect();
     } catch (MqttException e) {

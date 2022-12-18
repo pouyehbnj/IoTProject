@@ -36,12 +36,12 @@ public class PahoDemoImplCallBack implements MqttCallback  {
 
 		  public void publish1() {
 		    try {
-		      client = new MqttClient("tcp://localhost:1883", "pahomqttpublish1");
+		      client = new MqttClient("tcp://35.226.172.196:1883", "pahomqttpublish1");
 		      client.setCallback(this);
 		      client.connect();
 		      MqttMessage message = new MqttMessage();
 		      message.setPayload("19.0".getBytes());
-		      client.publish("home/outsidetemperature", message);
+		      client.publish("FireSensor", message);
 		      client.disconnect();
 		    } catch (MqttException e) {
 		      e.printStackTrace();
@@ -50,7 +50,7 @@ public class PahoDemoImplCallBack implements MqttCallback  {
 
 		  public void subscribe() {
 			    try {
-			      client = new MqttClient("tcp://localhost:1883", "pahomqttpublish12");
+			      client = new MqttClient("tcp://35.224.55.56:1883", "pahomqttpublish12");
 			      
 			      client.setCallback(this);
 			      client.connect();
