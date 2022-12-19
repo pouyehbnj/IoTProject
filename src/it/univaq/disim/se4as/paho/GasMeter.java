@@ -1,5 +1,4 @@
 package it.univaq.disim.se4as.paho;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,10 +15,10 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 
-public class ElectricitySensor {
-	MqttClient client;
+public class GasMeter {
+    MqttClient client;
 
-	public ElectricitySensor() {
+	public GasMeter() {
 		try {
 			client = new MqttClient("tcp://127.0.0.1:1883", "pahomqttpublish1");
 			client.connect();
@@ -28,18 +27,16 @@ public class ElectricitySensor {
 		}
 
 	}
+    public static void main(String[] args) {
 
-	public static void main(String[] args) {
-
-		ElectricitySensor sensor = new ElectricitySensor();
-		sensor.electricityPublisher();
+		GasMeter meter = new GasMeter();
+		meter.gasPublisher();
 		
 	}
-
-	public Map<String, String> electricityPublisher() {
+    public Map<String, String> gasPublisher() {
 		Map<String, String> consumptionMessage = new HashMap<String, String>();
 		String delimiter = ",";
-		String csvFile = "C:/Users/ASUS/Desktop/Erasmus Masters/IoT/project/energy_data/household_data_60min_singleindex.csv";
+		String csvFile = "C:/Users/ASUS/Desktop/Erasmus Masters/IoT/project/energy_data/gas_hourly.csv";
 		try {
 			File file = new File(csvFile);
 			FileReader fr = new FileReader(file);
@@ -54,9 +51,9 @@ public class ElectricitySensor {
 
 					tempArr = line.split(delimiter);
 					timestamp = tempArr[0];
-					consumption = tempArr[tempArr.length - 1];
+					consumption = tempArr[1];
 					// consumption = Float.valueOf(tempArr[tempArr.length-1]);
-					System.out.print("time stamp:" + timestamp + "- consumption:" + consumption);
+					System.out.print("time stamp:" + timestamp + "- gas consumption:" + consumption);
 					consumptionMessage.put("Date", timestamp);
 					consumptionMessage.put("Consumption", consumption);
 					String consumptionMessageString = consumptionMessage.toString();
@@ -64,7 +61,7 @@ public class ElectricitySensor {
 
 						MqttMessage message = new MqttMessage();
 						message.setPayload(consumptionMessageString.getBytes());
-						client.publish("SmartMeter/electricity", message);
+						client.publish("SmartMeter/gas", message);
 						System.out.println("publisheeddd");
 						try {
 							Thread.sleep(5000);
@@ -87,5 +84,4 @@ public class ElectricitySensor {
 		return consumptionMessage;
 	}
 
-	
 }

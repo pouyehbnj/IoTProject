@@ -60,6 +60,10 @@ public class SmartMeterSubscriber implements MqttCallback {
     } else if (topic.equals("SmartMeter/gas")) {
 
       System.out.println(String.format(" received gas: %s", messageText));
+      String consumption = messageText.split(",")[0].split("=")[1];
+      String date = messageText.split(",")[1].split("=")[1].split("}")[0];
+      System.out.println("gas consumption is:"+consumption);
+      System.out.println("Date is:"+date);
 
     } else if (topic.equals("SmartMeter/water")) {
 

@@ -1,9 +1,13 @@
 package it.univaq.disim.se4as.paho;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -36,7 +40,15 @@ public class FireDetectorSubscriber implements MqttCallback {
         
         if (topic.equals("FireSensor")) {
 
-            System.out.println(String.format(" received electricity: %s", messageText));
+            System.out.println(String.format(" received Fire: %s", messageText));
+            Properties props = new Properties();
+            props.load(new StringReader(messageText.substring(1, messageText.length() - 1).replace(", ", "\n")));      
+            Map<String, String> map2 = new HashMap<String, String>();
+            for (Map.Entry<Object, Object> e : props.entrySet()) {
+            map2.put((String)e.getKey(), (String)e.getValue());
+            }
+            System.out.println(map2.get("FireAlarm"));
+            System.out.println(map2.get("Temperatue"));
         }
 
         // System.out.println("A new message arrived from the topic: \"" + arg0 + "\".
@@ -51,26 +63,26 @@ public class FireDetectorSubscriber implements MqttCallback {
     }
 
     public void subscribe() {
-            try {
-              client = new MqttClient("tcp://localhost:1883", "FireSensor");
-              
-              client.setCallback(this);
-              client.connect();
-              try{
+        try {
+            client = new MqttClient("tcp://localhost:1883", "FireSensor");
 
-                client.subscribe("FireSensor",2);
-        
-            }
-            catch (MqttException e){
+            client.setCallback(this);
+            client.connect();
+            try {
+
+                client.subscribe("FireSensor", 2);
+
+            } catch (MqttException e) {
                 e.printStackTrace();
             }
-              
-             // client.subscribe(new String[]{"home/outsidetemperature","home/livingroomtemperature"});
-             // client.subscribe("home/#");
-              System.out.println("Hello!");
-              
-            } catch (MqttException e) {
-              e.printStackTrace();
-            }
-          }
+
+            // client.subscribe(new
+            // String[]{"home/outsidetemperature","home/livingroomtemperature"});
+            // client.subscribe("home/#");
+            System.out.println("Hello!");
+
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
 }
